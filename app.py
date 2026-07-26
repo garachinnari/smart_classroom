@@ -16,7 +16,19 @@ def home():
     if new_student:
         with open("students.txt", "a") as file:
             file.write(new_student + "\n")
+# Delete student name
+delete_student = request.form.get("delete_student")
 
+if delete_student:
+    with open("students.txt", "r") as file:
+        students = file.read().splitlines()
+
+    if delete_student in students:
+        students.remove(delete_student)
+
+    with open("students.txt", "w") as file:
+        for student in students:
+            file.write(student + "\n")
     # Read student names
     with open("students.txt", "r") as file:
         students = file.read().splitlines()

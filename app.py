@@ -11,11 +11,12 @@ app = Flask(__name__)
 def home():
 
     # Add student
-    new_student = request.form.get("student_name")
+    roll_no = request.form.get("roll_no")
+    student_name = request.form.get("student_name")
 
-    if new_student:
+    if roll_no and student_name:
         with open("students.txt", "a") as file:
-            file.write(new_student + "\n")
+            file.write(f"{roll_no},{student_name}\n")
 
 
     # Delete student
@@ -25,8 +26,10 @@ def home():
         with open("students.txt", "r") as file:
             students = file.read().splitlines()
 
-        if delete_student in students:
-            students.remove(delete_student)
+        students = [
+            student for student in students
+            if student != delete_student
+        ]
 
         with open("students.txt", "w") as file:
             for student in students:
@@ -34,20 +37,24 @@ def home():
 
 
     # Read students
-    with open("students.txt", "r") as file:
-        students = file.read().splitlines()
+    if os.path.exists("students.txt"):
+        with open("students.txt", "r") as file:
+            students = file.read().splitlines()
+    else:
+        students = []
 
 
-    # Present and absent
+    # Attendance
     present_students = request.form.getlist("present")
     absent_students = request.form.getlist("absent")
 
 
+    total_students = len(students)
     students_present = len(present_students)
     students_absent = len(absent_students)
 
 
-    # Light automation
+    # Light automation logic
     light_intensity = 40
 
     if students_present > 0 and light_intensity < 50:
@@ -63,7 +70,7 @@ def home():
         suggestion = "Classroom active. Lights are controlled automatically."
 
 
-    # Attendance log
+    # Save attendance log
     if present_students or absent_students:
         with open("attendance.txt", "a") as file:
             file.write(f"Time: {datetime.now()}\n")
@@ -76,6 +83,7 @@ def home():
     return render_template(
         "index.html",
         students=students,
+        total_students=total_students,
         students_present=students_present,
         students_absent=students_absent,
         light_status=light_status,

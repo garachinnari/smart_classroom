@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    # Add student
+    # Add Student
     roll_no = request.form.get("roll_no")
     student_name = request.form.get("student_name")
 
@@ -19,24 +19,25 @@ def home():
             file.write(f"{roll_no},{student_name}\n")
 
 
-    # Delete student
+    # Delete Student
     delete_student = request.form.get("delete_student")
 
     if delete_student:
-        with open("students.txt", "r") as file:
-            students = file.read().splitlines()
+        if os.path.exists("students.txt"):
+            with open("students.txt", "r") as file:
+                students = file.read().splitlines()
 
-        students = [
-            student for student in students
-            if student != delete_student
-        ]
+            students = [
+                student for student in students
+                if student != delete_student
+            ]
 
-        with open("students.txt", "w") as file:
-            for student in students:
-                file.write(student + "\n")
+            with open("students.txt", "w") as file:
+                for student in students:
+                    file.write(student + "\n")
 
 
-    # Read students
+    # Read Students
     if os.path.exists("students.txt"):
         with open("students.txt", "r") as file:
             students = file.read().splitlines()
@@ -54,7 +55,7 @@ def home():
     students_absent = len(absent_students)
 
 
-    # Light automation logic
+    # Light Automation
     light_intensity = 40
 
     if students_present > 0 and light_intensity < 50:
@@ -63,20 +64,34 @@ def home():
         light_status = "OFF"
 
 
-    # AI suggestion
+    # AI Suggestion
     if students_present == 0:
         suggestion = "Classroom empty. Switch OFF lights to save energy."
     else:
         suggestion = "Classroom active. Lights are controlled automatically."
 
 
-    # Save attendance log
+    # Attendance Log
     if present_students or absent_students:
+
         with open("attendance.txt", "a") as file:
-            file.write(f"Time: {datetime.now()}\n")
-            file.write(f"Present: {', '.join(present_students)}\n")
-            file.write(f"Absent: {', '.join(absent_students)}\n")
-            file.write(f"Light Status: {light_status}\n")
+
+            file.write("Date & Time: ")
+            file.write(str(datetime.now()))
+            file.write("\n")
+
+            file.write("Present: ")
+            file.write(", ".join(present_students))
+            file.write("\n")
+
+            file.write("Absent: ")
+            file.write(", ".join(absent_students))
+            file.write("\n")
+
+            file.write("Light Status: ")
+            file.write(light_status)
+            file.write("\n")
+
             file.write("--------------------\n")
 
 
@@ -92,5 +107,10 @@ def home():
 
 
 if __name__ == "__main__":
+
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )

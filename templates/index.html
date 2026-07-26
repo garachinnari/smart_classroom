@@ -1,32 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Smart Classroom System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
 
+<body>
+
+<h1>🏫 Smart Classroom Light & Attendance System</h1>
 
 
-<!-- AI Suggestion -->
+<div class="container">
+
+
+<!-- Dashboard -->
 
 <div class="card">
+
+<h2>📊 Dashboard</h2>
+
+<p>Total Students:
+<b>{{ total_students }}</b>
+</p>
+
+<p>Present Students:
+<b>{{ students_present }}</b>
+</p>
+
+<p>Absent Students:
+<b>{{ students_absent }}</b>
+</p>
+
+</div>
+
+
+
+<!-- Add Student -->
+
+<div class="card">
+
+<h2>👨‍🎓 Student Registration</h2>
+
+
+<form method="POST">
+
+<input type="text"
+name="roll_no"
+placeholder="Enter Roll Number"
+required>
+
+
+<br><br>
+
+
+<input type="text"
+name="student_name"
+placeholder="Enter Student Name"
+required>
+
+
+<br><br>
+
+
+<button type="submit"
+name="add_student">
+
+Add Student
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+<!-- Student List -->
+
+<div class="card">
+
+<h2>👥 Students List</h2>
+
+
+{% for student in students %}
+
+<p>
+
+{{ student }}
+
+<form method="POST">
+
+<button type="submit"
+name="delete_student"
+value="{{ student }}">
+
+Delete
+
+</button>
+
+</form>
+
+
+</p>
+
+
+{% endfor %}
+
+
+</div>
+
+
+
+
+
+<!-- Attendance -->
+
+<div class="card">
+
+
+<h2>📋 Mark Attendance</h2>
+
+
+<form method="POST">
+
+
+<table>
+
+
+<tr>
+
+<th>Student</th>
+
+<th>Present</th>
+
+</tr>
+
+
+
+{% for student in students %}
+
+
+<tr>
+
+<td>
+{{ student }}
+</td>
+
+
+<td>
+
+<input type="checkbox"
+name="present"
+value="{{ student }}">
+
+</td>
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</table>
+
+
+<br>
+
+
+<button type="submit"
+name="submit_attendance">
+
+Save Attendance
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+<!-- Smart Light -->
+
+
+<div class="card">
+
+
+<h2>💡 Smart Light</h2>
+
+
+<p>
+
+Status:
+
+<b>
+{{ light_status }}
+</b>
+
+</p>
+
+
+</div>
+
+
+
+
+
+<!-- AI -->
+
+
+<div class="card">
+
 
 <h2>🤖 AI Suggestion</h2>
 
+
 <p>
+
 {{ suggestion }}
+
 </p>
+
 
 </div>
 
 
 
-<!-- Log -->
+
+
+<!-- Attendance Log -->
+
 
 <div class="card">
 
+
 <h2>📄 Attendance Log</h2>
 
+
 <p>
+
 Attendance saved automatically.
+
 </p>
 
+
 </div>
+
 
 
 

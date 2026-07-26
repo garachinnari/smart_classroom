@@ -1,6 +1,6 @@
 print("APP STARTED")
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -8,7 +8,7 @@ app = Flask(__name__)
 def home():
 
     # Sensor values (demo input)
-    students_present = 30
+    students_present = int(request.form.get("students", 30))
     light_intensity = 40
 
     # Light automation logic

@@ -14,98 +14,159 @@
 <div class="container">
 
 
+    <!-- Light Status -->
     <div class="card">
         <h2>💡 Light Status</h2>
-        <p>Classroom Light: <b>{{ light_status }}</b></p>
+        <p>
+            Classroom Light:
+            <b>{{ light_status }}</b>
+        </p>
     </div>
 
 
 
+    <!-- Student Management -->
     <div class="card">
 
-        <h2>👥 Attendance</h2>
-
+        <h2>👨‍🎓 Student Details</h2>
 
         <form method="POST">
 
+            <input 
+                type="text" 
+                name="roll_no" 
+                placeholder="Enter Roll Number"
+            >
+
+            <br><br>
 
             <input 
                 type="text" 
                 name="student_name" 
-                placeholder="Enter student name"
+                placeholder="Enter Student Name"
             >
+
+            <br><br>
 
             <button type="submit">
                 Add Student
             </button>
 
 
-            <hr>
+        </form>
+
+    </div>
 
 
-            {% for student in students %}
+
+
+    <!-- Attendance -->
+    <div class="card">
+
+        <h2>📋 Attendance</h2>
+
+
+        <form method="POST">
+
+
+        {% for student in students %}
 
             <p>
-                {{ student }}
 
-                <button 
-                    type="submit" 
-                    name="present" 
-                    value="{{ student }}"
-                >
-                    Present
-                </button>
+            {{ student }}
 
 
-                <button 
-                    type="submit" 
-                    name="absent" 
-                    value="{{ student }}"
-                >
-                    Absent
-                </button>
+            <button 
+                type="submit" 
+                name="present" 
+                value="{{ student }}"
+            >
+                Present
+            </button>
 
 
-                <button 
-                    type="submit" 
-                    name="delete_student" 
-                    value="{{ student }}"
-                >
-                    Delete
-                </button>
+            <button 
+                type="submit" 
+                name="absent" 
+                value="{{ student }}"
+            >
+                Absent
+            </button>
+
+
+            <button 
+                type="submit" 
+                name="delete_student" 
+                value="{{ student }}"
+            >
+                Delete
+            </button>
+
 
             </p>
 
-            {% endfor %}
+
+        {% endfor %}
 
 
         </form>
 
 
-        <p>Present Students: <b>{{ students_present }}</b></p>
+    </div>
 
-        <p>Absent Students: <b>{{ students_absent }}</b></p>
+
+
+
+    <!-- Dashboard -->
+    <div class="card">
+
+        <h2>📊 Dashboard</h2>
+
+        <p>
+            Total Students:
+            <b>{{ total_students }}</b>
+        </p>
+
+
+        <p>
+            Present Students:
+            <b>{{ students_present }}</b>
+        </p>
+
+
+        <p>
+            Absent Students:
+            <b>{{ students_absent }}</b>
+        </p>
 
 
     </div>
 
 
 
+
+    <!-- Log -->
     <div class="card">
 
         <h2>📄 Attendance Log</h2>
 
-        <p>Attendance Saved Successfully</p>
+        <p>
+            Attendance saved successfully
+        </p>
 
     </div>
 
 
 
+
+    <!-- AI -->
     <div class="card">
 
         <h2>🤖 AI Suggestion</h2>
 
-        <p>{{ suggestion }}</p>
+        <p>
+            {{ suggestion }}
+        </p>
 
     </div>
 

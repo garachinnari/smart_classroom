@@ -20,11 +20,14 @@
     </div>
 
 
+
     <div class="card">
 
         <h2>👥 Attendance</h2>
 
+
         <form method="POST">
+
 
             <input 
                 type="text" 
@@ -45,13 +48,22 @@
             <p>
                 {{ student }}
 
-                <input 
-                    type="checkbox" 
+                <button 
+                    type="submit" 
                     name="present" 
                     value="{{ student }}"
                 >
+                    Present
+                </button>
 
-                Present
+
+                <button 
+                    type="submit" 
+                    name="absent" 
+                    value="{{ student }}"
+                >
+                    Absent
+                </button>
 
 
                 <button 
@@ -67,17 +79,12 @@
             {% endfor %}
 
 
-            <button type="submit">
-                Save Attendance
-            </button>
-
-
         </form>
 
 
-        <p>Present: <b>{{ students_present }}</b></p>
+        <p>Present Students: <b>{{ students_present }}</b></p>
 
-        <p>Absent: <b>{{ students_absent }}</b></p>
+        <p>Absent Students: <b>{{ students_absent }}</b></p>
 
 
     </div>

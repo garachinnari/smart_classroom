@@ -10,11 +10,25 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    students_present = int(request.form.get("students", 30))
+    # Add new student name
+    new_student = request.form.get("student_name")
 
-    total_students = 60
-    students_absent = total_students - students_present
+    if new_student:
+        with open("students.txt", "a") as file:
+            file.write(new_student + "\n")
 
+    # Read student names
+    with open("students.txt", "r") as file:
+        students = file.read().splitlines()
+
+    # Attendance counts
+    present_students = request.form.getlist("present")
+    absent_students = [student for student in students if student not in present_students]
+
+    students_present = len(present_students)
+    students_absent = len(absent_students)
+
+    # Light automation
     light_intensity = 40
 
     if students_present > 0 and light_intensity < 50:
@@ -22,30 +36,28 @@ def home():
     else:
         light_status = "OFF"
 
+    # AI suggestion
     if students_present == 0:
         suggestion = "Classroom empty. Switch OFF lights to save energy."
     else:
         suggestion = "Classroom active. Lights are controlled automatically."
 
-    # Save attendance record
-    with open("attendance.txt", "a") as file:
-        file.write(f"Time: {datetime.now()}\n")
-        file.write(f"Students Present: {students_present}\n")
-        file.write(f"Students Absent: {students_absent}\n")
-        file.write(f"Light Status: {light_status}\n")
-        file.write("--------------------\n")
-
-    # Read attendance history
-    with open("attendance.txt", "r") as file:
-        attendance_log = file.read()
+    # Save attendance
+    if request.method == "POST" and present_students:
+        with open("attendance.txt", "a") as file:
+            file.write(f"Time: {datetime.now()}\n")
+            file.write(f"Present: {', '.join(present_students)}\n")
+            file.write(f"Absent: {', '.join(absent_students)}\n")
+            file.write(f"Light Status: {light_status}\n")
+            file.write("--------------------\n")
 
     return render_template(
         "index.html",
-        light_status=light_status,
+        students=students,
         students_present=students_present,
         students_absent=students_absent,
-        suggestion=suggestion,
-        attendance_log=attendance_log
+        light_status=light_status,
+        suggestion=suggestion
     )
 
 

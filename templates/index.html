@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
+
 <body>
 
 <h1>🏫 Smart Classroom Light & Attendance System</h1>
@@ -14,6 +15,8 @@
 
 <div class="container">
 
+
+<!-- Dashboard -->
 
 <div class="card">
 
@@ -35,9 +38,12 @@
 
 
 
+
+<!-- Add Student -->
+
 <div class="card">
 
-<h2>👨‍🎓 Add Student</h2>
+<h2>👨‍🎓 Student Registration</h2>
 
 <form method="POST">
 
@@ -66,10 +72,12 @@ Add Student
 
 
 
+
+<!-- Student List -->
+
 <div class="card">
 
-<h2>👥 Student List</h2>
-
+<h2>👥 Students List</h2>
 
 {% for student in students %}
 
@@ -82,12 +90,15 @@ Add Student
 <button type="submit"
 name="delete_student"
 value="{{ student }}">
+
 Delete
+
 </button>
 
 </form>
 
 </p>
+
 
 {% endfor %}
 
@@ -98,6 +109,9 @@ Delete
 
 
 
+
+<!-- Attendance -->
+
 <div class="card">
 
 <h2>📋 Today's Attendance</h2>
@@ -106,34 +120,60 @@ Delete
 <form method="POST">
 
 
-<table>
+<table border="1" width="100%">
 
 <tr>
+
 <th>Student</th>
+
 <th>Present</th>
+
+<th>Absent</th>
+
 </tr>
+
 
 
 {% for student in students %}
 
+
 <tr>
 
+
 <td>
+
 {{ student }}
+
 </td>
+
 
 
 <td>
 
-<input type="checkbox"
-name="present"
-value="{{ student }}">
+<input type="radio"
+name="attendance_{{ loop.index }}"
+value="present_{{ student }}">
 
 </td>
+
+
+
+
+<td>
+
+<input type="radio"
+name="attendance_{{ loop.index }}"
+value="absent_{{ student }}">
+
+</td>
+
+
 
 </tr>
 
+
 {% endfor %}
+
 
 
 </table>
@@ -153,19 +193,27 @@ Save Attendance
 
 </form>
 
+
 </div>
 
 
 
 
+
+
+
+<!-- Smart Light -->
 
 <div class="card">
 
 <h2>💡 Smart Light</h2>
 
 <p>
+
 Light Status:
+
 <b>{{ light_status }}</b>
+
 </p>
 
 </div>
@@ -173,13 +221,19 @@ Light Status:
 
 
 
+
+
+
+<!-- AI Suggestion -->
 
 <div class="card">
 
 <h2>🤖 AI Suggestion</h2>
 
 <p>
+
 {{ suggestion }}
+
 </p>
 
 </div>
@@ -187,13 +241,19 @@ Light Status:
 
 
 
+
+
+
+<!-- Attendance Log -->
 
 <div class="card">
 
 <h2>📄 Attendance Log</h2>
 
 <p>
+
 Attendance saved automatically.
+
 </p>
 
 </div>
@@ -201,6 +261,7 @@ Attendance saved automatically.
 
 
 </div>
+
 
 </body>
 

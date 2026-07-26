@@ -10,25 +10,18 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    # Student count from website
     students_present = int(request.form.get("students", 30))
 
-    # Total classroom strength
     total_students = 60
-
-    # Calculate absent students
     students_absent = total_students - students_present
 
-    # Sensor value (demo)
     light_intensity = 40
 
-    # Light automation logic
     if students_present > 0 and light_intensity < 50:
         light_status = "ON"
     else:
         light_status = "OFF"
 
-    # AI suggestion
     if students_present == 0:
         suggestion = "Classroom empty. Switch OFF lights to save energy."
     else:
@@ -42,12 +35,17 @@ def home():
         file.write(f"Light Status: {light_status}\n")
         file.write("--------------------\n")
 
+    # Read attendance history
+    with open("attendance.txt", "r") as file:
+        attendance_log = file.read()
+
     return render_template(
         "index.html",
         light_status=light_status,
         students_present=students_present,
         students_absent=students_absent,
-        suggestion=suggestion
+        suggestion=suggestion,
+        attendance_log=attendance_log
     )
 
 

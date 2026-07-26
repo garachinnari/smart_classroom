@@ -1,3 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Smart Classroom Light & Attendance System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+<h1>🏫 Smart Classroom Light & Attendance System</h1>
+
+
+<div class="container">
+
+
+
+<!-- Dashboard -->
+
+<div class="card">
+
+<h2>📊 Dashboard</h2>
+
+<p>Total Students:
+<b>{{ total_students }}</b>
+</p>
+
+<p>Present Students:
+<b>{{ students_present }}</b>
+</p>
+
+<p>Absent Students:
+<b>{{ students_absent }}</b>
+</p>
+
+</div>
+
+
+
+
+
+<!-- Students List -->
+
+<div class="card">
+
+<h2>👥 Students List</h2>
+
+
+<form method="POST">
+
+<input type="hidden" name="action" value="add">
+
+
+<input type="text"
+name="roll"
+placeholder="Roll Number (25B21A46-11)"
+required>
+
+
+<br><br>
+
+
+<input type="text"
+name="name"
+placeholder="Student Name"
+required>
+
+
+<br><br>
+
+
+<button type="submit">
+➕ Add Student
+</button>
+
+
+</form>
+
+
+
+<hr>
+
+
+{% for student in students %}
+
+
+<p>
+<b>{{ student.roll }}</b>
+-
+{{ student.name }}
+</p>
+
+
+<form method="POST">
+
+<input type="hidden"
+name="action"
+value="delete">
+
+
+<input type="hidden"
+name="index"
+value="{{ loop.index0 }}">
+
+
+<button type="submit">
+🗑️ Delete
+</button>
+
+
+</form>
+
+
+<hr>
+
+
+{% endfor %}
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Attendance -->
+
+<div class="card">
+
+
+<h2>📋 Today's Attendance</h2>
+
+
+<form method="POST">
+
+
+<input type="hidden"
+name="action"
+value="attendance">
+
+
+
+<table>
+
+
+<tr>
+
+<th>Roll Number</th>
+
+<th>Student Name</th>
+
+<th>Present</th>
+
+<th>Absent</th>
+
+</tr>
+
+
+
+{% for student in students %}
+
+
+<tr>
+
+
+<td>
+{{ student.roll }}
+</td>
+
+
+<td>
+{{ student.name }}
+</td>
+
+
+
+<td>
+
+<input type="radio"
+name="status_{{ loop.index0 }}"
+value="Present">
+
+</td>
+
+
+
+
+<td>
+
+<input type="radio"
+name="status_{{ loop.index0 }}"
+value="Absent">
+
+</td>
+
+
+
+</tr>
+
+
+
+{% endfor %}
+
+
+
+</table>
+
+
+<br>
+
+
+<button type="submit">
+
+✅ Save Attendance
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Smart Light -->
+
+<div class="card">
+
+<h2>💡 Smart Light</h2>
+
+<p>
+Light Status:
+<b>{{ light_status }}</b>
+</p>
+
+</div>
+
+
+
+
+
+
+
+
 <!-- AI Suggestion -->
 
 <div class="card">
@@ -5,12 +260,11 @@
 <h2>🤖 AI Suggestion</h2>
 
 <p>
-
 {{ suggestion }}
-
 </p>
 
 </div>
+
 
 
 
@@ -24,11 +278,16 @@
 
 <h2>📄 Attendance Log</h2>
 
+
+{% for log in attendance %}
+
 <p>
-
-Attendance saved automatically.
-
+{{ log }}
 </p>
+
+
+{% endfor %}
+
 
 </div>
 

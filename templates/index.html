@@ -1,59 +1,99 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Smart Classroom Dashboard</title>
+    <title>Smart Classroom System</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
+
 <body>
 
-<h1>🏫 Smart Classroom System</h1>
+<h1>🏫 Smart Classroom Light & Attendance System</h1>
 
 
 <div class="container">
 
 
-    <!-- Light Status -->
+    <!-- Dashboard -->
     <div class="card">
-        <h2>💡 Light Status</h2>
-        <p>
-            Classroom Light:
-            <b>{{ light_status }}</b>
+
+        <h2>📊 Dashboard</h2>
+
+        <p>Total Students:
+            <b>{{ total_students }}</b>
         </p>
+
+        <p>Present Students:
+            <b>{{ students_present }}</b>
+        </p>
+
+        <p>Absent Students:
+            <b>{{ students_absent }}</b>
+        </p>
+
     </div>
 
 
 
-    <!-- Student Management -->
+    <!-- Student Details -->
     <div class="card">
 
         <h2>👨‍🎓 Student Details</h2>
 
+
         <form method="POST">
 
-            <input 
-                type="text" 
-                name="roll_no" 
-                placeholder="Enter Roll Number"
-            >
+            <input type="text"
+                   name="roll_no"
+                   placeholder="Roll Number">
+
 
             <br><br>
 
-            <input 
-                type="text" 
-                name="student_name" 
-                placeholder="Enter Student Name"
-            >
+
+            <input type="text"
+                   name="student_name"
+                   placeholder="Student Name">
+
 
             <br><br>
+
 
             <button type="submit">
                 Add Student
             </button>
 
-
         </form>
+
+
+        <hr>
+
+
+        <h3>Student List</h3>
+
+
+        {% for student in students %}
+
+        <p>
+            {{ student }}
+
+            <form method="POST" style="display:inline;">
+
+                <button type="submit"
+                        name="delete_student"
+                        value="{{ student }}">
+                    Delete
+                </button>
+
+            </form>
+
+        </p>
+
+
+        {% endfor %}
+
 
     </div>
 
@@ -71,39 +111,27 @@
 
         {% for student in students %}
 
-            <p>
+
+        <p>
 
             {{ student }}
 
 
-            <button 
-                type="submit" 
-                name="present" 
-                value="{{ student }}"
-            >
+            <button type="submit"
+                    name="present"
+                    value="{{ student }}">
                 Present
             </button>
 
 
-            <button 
-                type="submit" 
-                name="absent" 
-                value="{{ student }}"
-            >
+            <button type="submit"
+                    name="absent"
+                    value="{{ student }}">
                 Absent
             </button>
 
 
-            <button 
-                type="submit" 
-                name="delete_student" 
-                value="{{ student }}"
-            >
-                Delete
-            </button>
-
-
-            </p>
+        </p>
 
 
         {% endfor %}
@@ -117,41 +145,14 @@
 
 
 
-    <!-- Dashboard -->
+    <!-- Light -->
     <div class="card">
 
-        <h2>📊 Dashboard</h2>
+        <h2>💡 Smart Light</h2>
 
         <p>
-            Total Students:
-            <b>{{ total_students }}</b>
-        </p>
-
-
-        <p>
-            Present Students:
-            <b>{{ students_present }}</b>
-        </p>
-
-
-        <p>
-            Absent Students:
-            <b>{{ students_absent }}</b>
-        </p>
-
-
-    </div>
-
-
-
-
-    <!-- Log -->
-    <div class="card">
-
-        <h2>📄 Attendance Log</h2>
-
-        <p>
-            Attendance saved successfully
+            Light Status:
+            <b>{{ light_status }}</b>
         </p>
 
     </div>
@@ -171,8 +172,24 @@
     </div>
 
 
+
+
+    <!-- Log -->
+    <div class="card">
+
+        <h2>📄 Attendance Log</h2>
+
+        <p>
+            Attendance records are saved automatically.
+        </p>
+
+    </div>
+
+
+
 </div>
 
 
 </body>
+
 </html>

@@ -12,29 +12,53 @@
 <div class="container">
 
     <div class="card">
+        <h2>➕ Add Student</h2>
+
+        <form method="POST">
+            <input type="text" name="student_name" placeholder="Enter student name">
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+
+    <div class="card">
+        <h2>👥 Attendance</h2>
+
+        <form method="POST">
+
+            {% for student in students %}
+            <p>
+                {{ student }}
+                <input type="checkbox" name="present" value="{{ student }}">
+                Present
+            </p>
+            {% endfor %}
+
+            <button type="submit">Save Attendance</button>
+
+        </form>
+
+        <p>Present: <b>{{ students_present }}</b></p>
+        <p>Absent: <b>{{ students_absent }}</b></p>
+
+    </div>
+
+
+    <div class="card">
         <h2>💡 Light Status</h2>
         <p>Classroom Light: <b>{{ light_status }}</b></p>
     </div>
 
-    <div class="card">
-        <h2>👥 Attendance</h2>
-        <p>Students Present: <b>{{ students_present }}</b></p>
-        <p>Students Absent: <b>{{ students_absent }}</b></p>
-        <form method="POST">
-            <input type="number" name="students" placeholder="Enter students count">
-            <button type="submit">Update</button>
-        </form>
-    </div>
-
-    <div class="card">
-        <h2>📄 Attendance Log</h2>
-        <pre>{{ attendance_log }}</pre>
-    </div>
 
     <div class="card">
         <h2>🤖 AI Suggestion</h2>
         <p>{{ suggestion }}</p>
     </div>
+
+</div>
+
+</body>
+</html>    </div>
 
 </div>
 

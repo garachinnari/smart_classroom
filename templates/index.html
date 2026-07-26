@@ -26,19 +26,24 @@
 
         <form method="POST">
 
-            {% for student in students %}
-            <p>
-                {{ student }}
-                <input type="checkbox" name="present" value="{{ student }}">
-                Present
-            </p>
-            {% endfor %}
+            
 
             <button type="submit">Save Attendance</button>
 
         </form>
 
-        <p>Present: <b>{{ students_present }}</b></p>
+        <p>Present: <b>{{ st{% for student in students %}
+<p>
+    {{ student }}
+
+    <input type="checkbox" name="present" value="{{ student }}">
+    Present
+
+    <button type="submit" name="delete_student" value="{{ student }}">
+        Delete
+    </button>
+</p>
+{% endfor %}udents_present }}</b></p>
         <p>Absent: <b>{{ students_absent }}</b></p>
 
     </div>

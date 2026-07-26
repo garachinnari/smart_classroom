@@ -1,29 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Classroom Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<h1>🏫 Smart Classroom System</h1>
+
+
+<div class="container">
+
+
+    <div class="card">
+        <h2>💡 Light Status</h2>
+        <p>Classroom Light: <b>{{ light_status }}</b></p>
+    </div>
+
+
+    <div class="card">
+
+        <h2>👥 Attendance</h2>
+
+        <form method="POST">
+
+            <input 
+                type="text" 
+                name="student_name" 
+                placeholder="Enter student name"
+            >
+
+            <button type="submit">
+                Add Student
+            </button>
+
+
+            <hr>
+
+
+            {% for student in students %}
+
+            <p>
+                {{ student }}
+
+                <input 
+                    type="checkbox" 
+                    name="present" 
+                    value="{{ student }}"
+                >
+
+                Present
+
+
+                <button 
+                    type="submit" 
+                    name="delete_student" 
+                    value="{{ student }}"
+                >
+                    Delete
+                </button>
+
+            </p>
+
+            {% endfor %}
+
 
             <button type="submit">
                 Save Attendance
             </button>
 
+
         </form>
 
-        <p>Present Students: <b>{{ students_present }}</b></p>
-        <p>Absent Students: <b>{{ students_absent }}</b></p>
+
+        <p>Present: <b>{{ students_present }}</b></p>
+
+        <p>Absent: <b>{{ students_absent }}</b></p>
+
 
     </div>
 
 
+
     <div class="card">
+
         <h2>📄 Attendance Log</h2>
+
         <p>Attendance Saved Successfully</p>
+
     </div>
 
 
+
     <div class="card">
+
         <h2>🤖 AI Suggestion</h2>
+
         <p>{{ suggestion }}</p>
+
     </div>
 
 
 </div>
+
 
 </body>
 </html>

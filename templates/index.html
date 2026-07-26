@@ -13,12 +13,12 @@
 
     <div class="card">
         <h2>💡 Light Status</h2>
-        <p>Classroom Light: <b>ON</b></p>
+        <p>Classroom Light: <b>{{ light_status }}</b></p>
     </div>
 
     <div class="card">
         <h2>👥 Attendance</h2>
-        <p>Students Present: <b>30</b></p>
+        <p>Students Present: <b>{{ students_present }}</b></p>
     </div>
 
     <div class="card">
@@ -28,7 +28,7 @@
 
     <div class="card">
         <h2>🤖 AI Suggestion</h2>
-        <p>Lights will automatically turn OFF when classroom is empty.</p>
+        <p>{{ suggestion }}</p>
     </div>
 
 </div>

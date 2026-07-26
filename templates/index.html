@@ -19,6 +19,11 @@
     <div class="card">
         <h2>👥 Attendance</h2>
         <p>Students Present: <b>{{ students_present }}</b></p>
+
+        <form method="POST">
+            <input type="number" name="students" placeholder="Enter students count">
+            <button type="submit">Update</button>
+        </form>
     </div>
 
     <div class="card">

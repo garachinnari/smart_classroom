@@ -1,144 +1,90 @@
-print("APP STARTED")
-
 from flask import Flask, render_template, request
-from datetime import datetime
 import os
 
 app = Flask(__name__)
+
+STUDENTS_FILE = "students.txt"
+ATTENDANCE_FILE = "attendance.txt"
+
+
+def load_students():
+    if not os.path.exists(STUDENTS_FILE):
+        return []
+
+    with open(STUDENTS_FILE, "r") as file:
+        return [line.strip() for line in file if line.strip()]
+
+
+def save_students(students):
+    with open(STUDENTS_FILE, "w") as file:
+        for student in students:
+            file.write(student + "\n")
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    # Add Student
-    roll_no = request.form.get("roll_no")
-    student_name = request.form.get("student_name")
+    students = load_students()
 
-    if roll_no and student_name:
-        with open("students.txt", "a") as file:
-            file.write(f"{roll_no},{student_name}\n")
+    if request.method == "POST":
 
+        # Add Student
+        if "roll_no" in request.form and "student_name" in request.form:
+            roll = request.form["roll_no"].strip()
+            name = request.form["student_name"].strip()
 
-    # Delete Student
-    delete_student = request.form.get("delete_student")
+            if roll and name:
+                student = f"{roll},{name}"
+                if student not in students:
+                    students.append(student)
+                    save_students(students)
 
-    if delete_student:
+        # Delete Student
+        if "delete_student" in request.form:
+            student = request.form["delete_student"]
 
-        if os.path.exists("students.txt"):
+            if student in students:
+                students.remove(student)
+                save_students(students)
 
-            with open("students.txt", "r") as file:
-                students = file.read().splitlines()
+        # Submit Attendance
+        if request.form.get("submit_attendance") == "yes":
 
-            students = [
-                student for student in students
-                if student != delete_student
-            ]
+            present = request.form.getlist("present")
 
-            with open("students.txt", "w") as file:
-                for student in students:
+            with open(ATTENDANCE_FILE, "w") as file:
+                for student in present:
                     file.write(student + "\n")
 
+    students = load_students()
 
-
-    # Read Students
-    if os.path.exists("students.txt"):
-
-        with open("students.txt", "r") as file:
-            students = file.read().splitlines()
-
+    if os.path.exists(ATTENDANCE_FILE):
+        with open(ATTENDANCE_FILE, "r") as file:
+            attendance = [line.strip() for line in file if line.strip()]
     else:
-        students = []
-
-
-
-    # Attendance Checkbox Data
-
-    present_students = request.form.getlist("present")
-
-    absent_students = request.form.getlist("absent")
-
-
+        attendance = []
 
     total_students = len(students)
+    students_present = len(attendance)
+    students_absent = total_students - students_present
 
-    students_present = len(present_students)
-
-    students_absent = len(absent_students)
-
-
-
-    # Light Automation
-
-    light_intensity = 40
-
-    if students_present > 0 and light_intensity < 50:
+    if students_present > 0:
         light_status = "ON"
-
+        suggestion = "Students are present. Classroom lights are ON."
     else:
         light_status = "OFF"
-
-
-
-    # AI Suggestion
-
-    if students_present == 0:
-
-        suggestion = "Classroom empty. Switch OFF lights to save energy."
-
-    else:
-
-        suggestion = "Classroom active. Lights are controlled automatically."
-
-
-
-
-    # Save Attendance Log
-
-    if request.form.get("submit_attendance"):
-
-        with open("attendance.txt", "a") as file:
-
-            file.write("\nDate & Time: ")
-            file.write(str(datetime.now()))
-
-            file.write("\nPresent Students: ")
-            file.write(", ".join(present_students))
-
-            file.write("\nAbsent Students: ")
-            file.write(", ".join(absent_students))
-
-            file.write("\nLight Status: ")
-            file.write(light_status)
-
-            file.write("\n----------------------")
-
-
+        suggestion = "No students detected. Turn OFF classroom lights to save energy."
 
     return render_template(
-
         "index.html",
-
         students=students,
-
         total_students=total_students,
-
         students_present=students_present,
-
         students_absent=students_absent,
-
         light_status=light_status,
-
         suggestion=suggestion
-
     )
-
 
 
 if __name__ == "__main__":
-
-    port = int(os.environ.get("PORT", 5000))
-
-    app.run(
-        host="0.0.0.0",
-        port=port
-    )
+    app.run(debug=True)

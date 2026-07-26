@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f6ff;
+    text-align: center;
+}
+
+h1 {
+    color: #1e3a8a;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    width: 250px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px gray;
+}
+
+.card h2 {
+    color: #2563eb;
+}

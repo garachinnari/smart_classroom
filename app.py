@@ -4,29 +4,29 @@ import os
 
 app = Flask(__name__)
 
-STUDENTS_FILE = "students.txt"
+STUDENT_FILE = "students.txt"
 ATTENDANCE_FILE = "attendance.txt"
 LOG_FILE = "attendance_log.txt"
 
 
-# Read students
-def get_students():
-    if not os.path.exists(STUDENTS_FILE):
+# Load students
+def load_students():
+    if not os.path.exists(STUDENT_FILE):
         return []
 
-    with open(STUDENTS_FILE, "r") as file:
+    with open(STUDENT_FILE, "r") as file:
         return [line.strip() for line in file if line.strip()]
 
 
 # Save students
 def save_students(students):
-    with open(STUDENTS_FILE, "w") as file:
+    with open(STUDENT_FILE, "w") as file:
         for student in students:
             file.write(student + "\n")
 
 
-# Read today's attendance
-def get_attendance():
+# Load attendance
+def load_attendance():
     if not os.path.exists(ATTENDANCE_FILE):
         return []
 
@@ -37,36 +37,35 @@ def get_attendance():
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    students = get_students()
+    students = load_students()
 
     if request.method == "POST":
 
         # Add Student
-        if "add_student" in request.form:
+        if request.form.get("roll_no") and request.form.get("student_name"):
 
-            roll_no = request.form.get("roll_no")
+            roll = request.form.get("roll_no")
             name = request.form.get("student_name")
 
-            if roll_no and name:
-                student = f"{roll_no},{name}"
+            student = roll + "," + name
 
-                if student not in students:
-                    students.append(student)
-                    save_students(students)
-
-
-        # Delete Student
-        if "delete_student" in request.form:
-
-            delete = request.form.get("delete_student")
-
-            if delete in students:
-                students.remove(delete)
+            if student not in students:
+                students.append(student)
                 save_students(students)
 
 
-        # Submit Attendance
-        if "submit_attendance" in request.form:
+        # Delete Student
+        if request.form.get("delete_student"):
+
+            student = request.form.get("delete_student")
+
+            if student in students:
+                students.remove(student)
+                save_students(students)
+
+
+        # Save Attendance
+        if request.form.get("submit_attendance"):
 
             present_students = request.form.getlist("present")
 
@@ -76,23 +75,22 @@ def home():
                     file.write(student + "\n")
 
 
-            # Save Log
             with open(LOG_FILE, "a") as file:
-                file.write("\nDate: ")
+                file.write("\n-------------------\n")
                 file.write(
+                    "Date: " +
                     datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                    + "\n"
                 )
 
-                file.write("\nPresent Students:\n")
+                file.write("Present Students:\n")
 
                 for student in present_students:
                     file.write(student + "\n")
 
 
-
-    students = get_students()
-
-    attendance = get_attendance()
+    students = load_students()
+    attendance = load_attendance()
 
 
     total_students = len(students)
@@ -102,8 +100,7 @@ def home():
     students_absent = total_students - students_present
 
 
-
-    # Smart Light Logic
+    # Smart Light
 
     if students_present > 0:
         light_status = "ON 💡"
@@ -115,41 +112,29 @@ def home():
     # AI Suggestion
 
     if students_present > 0:
-
         suggestion = (
-            "Students are detected. "
-            "Keep lights ON and monitor classroom."
+            "Students are present. "
+            "Classroom environment is active."
         )
-
     else:
-
         suggestion = (
             "Classroom is empty. "
-            "Turn OFF lights to save energy."
+            "Save energy by switching OFF lights."
         )
-
 
 
     return render_template(
         "index.html",
-
         students=students,
-
         total_students=total_students,
-
         students_present=students_present,
-
         students_absent=students_absent,
-
         light_status=light_status,
-
         suggestion=suggestion
     )
 
 
-
 if __name__ == "__main__":
-
     app.run(
         host="0.0.0.0",
         port=5000,

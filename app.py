@@ -4,87 +4,196 @@ import os
 
 app = Flask(__name__)
 
-students = []
-attendance = []
+STUDENT_FILE = "students.txt"
+ATTENDANCE_FILE = "attendance.txt"
+
+
+# Read students
+def get_students():
+    students = []
+
+    if os.path.exists(STUDENT_FILE):
+        with open(STUDENT_FILE, "r") as file:
+            for line in file:
+                data = line.strip().split("|")
+
+                if len(data) == 2:
+                    students.append({
+                        "roll": data[0],
+                        "name": data[1]
+                    })
+
+    return students
+
+
+
+# Save students
+def save_students(students):
+
+    with open(STUDENT_FILE, "w") as file:
+
+        for student in students:
+            file.write(
+                student["roll"] + "|" + student["name"] + "\n"
+            )
+
 
 
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    global students, attendance
+    students = get_students()
+    attendance = []
+
 
     if request.method == "POST":
 
-        # Add student
+
+        # Add Student
+
         if request.form.get("action") == "add":
 
-            roll = request.form.get("roll_no")
-            name = request.form.get("student_name")
+            roll = request.form.get("roll")
+            name = request.form.get("name")
+
 
             if roll and name:
+
                 students.append({
                     "roll": roll,
                     "name": name
                 })
 
+                save_students(students)
 
-        # Delete student
-        if request.form.get("action") == "delete":
+
+
+
+        # Delete Student
+
+        elif request.form.get("action") == "delete":
 
             index = int(request.form.get("index"))
+
             students.pop(index)
 
+            save_students(students)
 
 
-        # Save attendance
-        if request.form.get("action") == "attendance":
 
-            attendance.clear()
 
-            for i, student in enumerate(students):
+        # Save Attendance
 
-                status = request.form.get(f"status_{i}")
+        elif request.form.get("action") == "attendance":
 
-                if status:
-                    attendance.append({
-                        "roll": student["roll"],
-                        "name": student["name"],
-                        "status": status
-                    })
+
+            with open(ATTENDANCE_FILE, "w") as file:
+
+
+                file.write(
+                    "Date: "
+                    + datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                    + "\n"
+                )
+
+
+                for i, student in enumerate(students):
+
+                    status = request.form.get(
+                        "status_" + str(i)
+                    )
+
+
+                    if status:
+
+                        file.write(
+                            student["roll"]
+                            + "|"
+                            + student["name"]
+                            + "|"
+                            + status
+                            + "\n"
+                        )
+
+
+
+
+    # Read attendance log
+
+    if os.path.exists(ATTENDANCE_FILE):
+
+        with open(ATTENDANCE_FILE, "r") as file:
+
+            attendance = file.readlines()
+
+
+
+    present_count = 0
+    absent_count = 0
+
+
+    for line in attendance:
+
+        if "|Present" in line:
+            present_count += 1
+
+        if "|Absent" in line:
+            absent_count += 1
 
 
 
     total_students = len(students)
 
-    present = len(
-        [a for a in attendance if a["status"] == "Present"]
-    )
-
-    absent = len(
-        [a for a in attendance if a["status"] == "Absent"]
-    )
 
 
-    if present > 0:
+    # Smart Light
+
+    if present_count > 0:
+
         light_status = "ON 💡"
-        suggestion = "Students are present. Classroom is active."
+
+        suggestion = (
+            "Students detected. "
+            "Classroom is active. "
+            "Lights are ON."
+        )
+
     else:
+
         light_status = "OFF 🌙"
-        suggestion = "No students detected. Save energy by switching OFF lights."
+
+        suggestion = (
+            "No students detected. "
+            "Save energy by switching OFF lights."
+        )
+
 
 
     return render_template(
+
         "index.html",
+
         students=students,
+
         attendance=attendance,
+
         total_students=total_students,
-        students_present=present,
-        students_absent=absent,
+
+        students_present=present_count,
+
+        students_absent=absent_count,
+
         light_status=light_status,
-        suggestion=suggestion,
-        time=datetime.now()
+
+        suggestion=suggestion
+
     )
 
 
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+
+    app.run(
+        host="0.0.0.0",
+        port=5000
+    )

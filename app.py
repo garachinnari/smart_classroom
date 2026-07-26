@@ -16,31 +16,41 @@ def home():
     if new_student:
         with open("students.txt", "a") as file:
             file.write(new_student + "\n")
-# Delete student name
-delete_student = request.form.get("delete_student")
 
-if delete_student:
-    with open("students.txt", "r") as file:
-        students = file.read().splitlines()
 
-    if delete_student in students:
-        students.remove(delete_student)
+    # Delete student name
+    delete_student = request.form.get("delete_student")
 
-    with open("students.txt", "w") as file:
-        for student in students:
-            file.write(student + "\n")
+    if delete_student:
+        with open("students.txt", "r") as file:
+            students = file.read().splitlines()
+
+        if delete_student in students:
+            students.remove(delete_student)
+
+        with open("students.txt", "w") as file:
+            for student in students:
+                file.write(student + "\n")
+
+
     # Read student names
     with open("students.txt", "r") as file:
         students = file.read().splitlines()
 
-    # Attendance counts
+
+    # Attendance count
     present_students = request.form.getlist("present")
-    absent_students = [student for student in students if student not in present_students]
+
+    absent_students = [
+        student for student in students
+        if student not in present_students
+    ]
 
     students_present = len(present_students)
     students_absent = len(absent_students)
 
-    # Light automation
+
+    # Light automation logic
     light_intensity = 40
 
     if students_present > 0 and light_intensity < 50:
@@ -48,20 +58,23 @@ if delete_student:
     else:
         light_status = "OFF"
 
+
     # AI suggestion
     if students_present == 0:
         suggestion = "Classroom empty. Switch OFF lights to save energy."
     else:
         suggestion = "Classroom active. Lights are controlled automatically."
 
-    # Save attendance
+
+    # Save attendance log
     if request.method == "POST" and present_students:
         with open("attendance.txt", "a") as file:
             file.write(f"Time: {datetime.now()}\n")
-            file.write(f"Present: {', '.join(present_students)}\n")
-            file.write(f"Absent: {', '.join(absent_students)}\n")
+            file.write(f"Present Students: {', '.join(present_students)}\n")
+            file.write(f"Absent Students: {', '.join(absent_students)}\n")
             file.write(f"Light Status: {light_status}\n")
             file.write("--------------------\n")
+
 
     return render_template(
         "index.html",

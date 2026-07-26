@@ -10,7 +10,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def home():
 
-    # Add new student name
+    # Add student
     new_student = request.form.get("student_name")
 
     if new_student:
@@ -18,7 +18,7 @@ def home():
             file.write(new_student + "\n")
 
 
-    # Delete student name
+    # Delete student
     delete_student = request.form.get("delete_student")
 
     if delete_student:
@@ -33,24 +33,21 @@ def home():
                 file.write(student + "\n")
 
 
-    # Read student names
+    # Read students
     with open("students.txt", "r") as file:
         students = file.read().splitlines()
 
 
-    # Attendance count
+    # Present and absent
     present_students = request.form.getlist("present")
+    absent_students = request.form.getlist("absent")
 
-    absent_students = [
-        student for student in students
-        if student not in present_students
-    ]
 
     students_present = len(present_students)
     students_absent = len(absent_students)
 
 
-    # Light automation logic
+    # Light automation
     light_intensity = 40
 
     if students_present > 0 and light_intensity < 50:
@@ -66,12 +63,12 @@ def home():
         suggestion = "Classroom active. Lights are controlled automatically."
 
 
-    # Save attendance log
-    if request.method == "POST" and present_students:
+    # Attendance log
+    if present_students or absent_students:
         with open("attendance.txt", "a") as file:
             file.write(f"Time: {datetime.now()}\n")
-            file.write(f"Present Students: {', '.join(present_students)}\n")
-            file.write(f"Absent Students: {', '.join(absent_students)}\n")
+            file.write(f"Present: {', '.join(present_students)}\n")
+            file.write(f"Absent: {', '.join(absent_students)}\n")
             file.write(f"Light Status: {light_status}\n")
             file.write("--------------------\n")
 
